@@ -25,17 +25,18 @@ jobs:
         with:
           gradle-version: '8.7'
 
-      - name: Extract project ZIP
+      - name: Find Android project
         run: |
-          mkdir project
           unzip -q BTHeadlock_SafeLauncher_GitHub_v2.zip -d project
+          find project -maxdepth 3 -type f \( -name "settings.gradle" -o -name "build.gradle" \)
 
       - name: Build APK
-        working-directory: project/BTHeadlock_SafeLauncher
-        run: gradle assembleDebug --no-daemon
+        run: |
+          cd project
+          gradle assembleDebug --no-daemon
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: BTHeadlock-APK
-          path: project/BTHeadlock_SafeLauncher/app/build/outputs/apk/debug/*.apk
+          name: HeadLock-V2-APK
+          path: project/app/build/outputs/apk/debug/*.apk
